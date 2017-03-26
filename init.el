@@ -112,6 +112,8 @@
 ;; mode-line に行番号を表示
 (column-number-mode t)
 
+;; カスタム変数は別ファイルに
+(setq custom-file (locate-user-emacs-file "custom.el"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key-bind (global)
@@ -183,7 +185,6 @@
 	    (define-key mozc-mode-map (kbd "<zenkaku-hankaku>") 'toggle-input-method)))
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; color-theme 
 ;;   https://code.google.com/p/gnuemacscolorthemetest/
@@ -192,56 +193,8 @@
 (load "color-theme")
 (color-theme-initialize)
 
-;(color-theme-blue-sea)
-;(color-theme-parus)
-
-(defun color-theme-minekoa-blue ()
-  "My defalut teme. based blue-sea theme by ZON."
-  (interactive)
-  (color-theme-install
-   '(color-theme-minekoa-blue
-     ((foreground-color . "lavender blush");floral white;gray
-      (background-color . "MidnightBlue")
-      (background-toolbar-color . "gray")
-      (bottom-toolbar-shadow-color . "#79e77df779e7")
-      (top-toolbar-shadow-color . "#fffffbeeffff")
-      (background-mode . dark))
-     (default ((t (nil))))
-     (region ((t (:background "DarkSlateBlue"))))
-     (underline ((t (:foreground "yellow" :underline t))))
-
-     (modeline ((t (:foreground "wheat" :background "gray16"))))
-     (mode-line-inactive ((t (:background "gray16" :foreground "wheat"))))
-     (modeline-buffer-id ((t (:foreground "beige" :background "gray16"))))
-     (modeline-mousable ((t (:foreground "light cyan" :background "slate blue"))))
-     (modeline-mousable-minor-mode ((t (:foreground "wheat" :background "slate blue"))))
-
-     (fringe ((t (:background "#100e4e" :foreground "gray"))))
-;     (fringe ((t (:background "#10125e" :foreground "gray"))))
-
-     (italic ((t (:foreground "dark red" :italic t))))
-     (bold-italic ((t (:foreground "dark red" :bold t :italic t))))
-     (font-lock-builtin-face ((t (:foreground "aquamarine"))))
-     (font-lock-doc-string-face ((t (:foreground "sky blue"))))
-     (font-lock-comment-face ((t (:foreground "light blue"))));powder blue;light blue
-     (font-lock-function-name-face ((t (:bold t :foreground "aquamarine"))))
-     (font-lock-keyword-face ((t (:foreground "pale turquoise" :bold t))))
-     (font-lock-reference-face ((t (:foreground "pale green"))))
-     (font-lock-constant-face ((t (:foreground "pale green"))))
-     (font-lock-string-face ((t (:foreground "light sky blue"))))
-     (font-lock-type-face ((t (:foreground "sky blue" :bold t))))
-     (font-lock-variable-name-face ((t (:foreground "turquoise" :bold t))))
-
-     (svn-mark-face ((t (:background "cyan" :foreground "black"))))
-
-     (elscreen-tab-background-face ((t (:foreground "wheat" :background "gray16"))))
-     (elscreen-tab-control-face ((t (:foreground "LavenderBlush4" :background "gray16"))))
-     (elscreen-tab-current-screen-face ((t (:foreground "wheat" :background "gray23"))))
-     (elscreen-tab-other-screen-face ((t (:foreground "LavenderBlush4" :background "gray18"))))
-
-     (bold ((t (:bold)))))))
-
 ;; テーマを適用
+(load "color-theme-minekoa")
 (color-theme-minekoa-blue)
 
 ;; マウスでポイントしている箇所の face を取得する
@@ -301,8 +254,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; what-char (文字コードの表示)
 ;;;    http://homepage3.nifty.com/satomii/software/elisp.ja.html
-(load "what-char")
-(what-char-add-to-mode-line)
+;(load "what-char")
+;(what-char-add-to-mode-line)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -352,26 +305,6 @@
 	     (setq indent-tabs-mode nil)
 	     ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; tuareg-mode (ocaml)
-;;    http://tuareg.forge.ocamlcore.org/
-(add-to-list 'load-path "~/.elisp/tuareg-2.0.6")
-
-(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code." t)
-(autoload 'tuareg-run-caml "tuareg" "startup a Caml toplevel" t)
-(autoload 'camldebug "camldebug" "Run the Caml debugger." t)
-
-(add-to-list 'auto-mode-alist '("\\.ml[ilyp]?$" . tuareg-mode))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; erlang-mode
-(setq load-path (cons "/usr/lib/erlang/lib/tools-2.8.6/emacs"
-      load-path))
-(setq erlang-root-dir "/usr/local/otp")
-(setq exec-path (cons "/usr/local/otp/bin" exec-path))
-
-(require 'erlang-start)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; gdb
 
@@ -387,15 +320,6 @@
 ;;minibufferに値を表示しない
 (setq gud-tooltip-echo-area nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; smalltalk (gst)
-(add-to-list 'load-path "~/local/share/emacs/site-lisp")
-
-(autoload 'smalltalk-mode "smalltalk-mode.elc" "" t)
-(autoload 'gst "gst-mode.elc" "" t)
-
-(push '("\\.st\\'" . smalltalk-mode) auto-mode-alist)
-;(push "\\.star\\'" inhibit-first-line-modes-regexps)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -436,55 +360,43 @@
 (migemo-init)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; keisen
-(load "keisen")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; tuareg-mode (ocaml)
+;;    http://tuareg.forge.ocamlcore.org/
+(add-to-list 'load-path "~/.elisp/tuareg-2.0.6")
 
+(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code." t)
+(autoload 'tuareg-run-caml "tuareg" "startup a Caml toplevel" t)
+(autoload 'camldebug "camldebug" "Run the Caml debugger." t)
+
+(add-to-list 'auto-mode-alist '("\\.ml[ilyp]?$" . tuareg-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; erlang-mode
+; (setq load-path (cons "/usr/lib/erlang/lib/tools-2.8.6/emacs"
+;       load-path))
+; (setq erlang-root-dir "/usr/local/otp")
+; (setq exec-path (cons "/usr/local/otp/bin" exec-path))
+;
+; (require 'erlang-start)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; keisen-x-mode (minor-mode)
-;;   keisen.el を使って  C-矢印 で罫線を書く 
-;;   xyzzyの box-drowings-mode 風 マイナーモード(消せないけど)
+;; smalltalk (gst)
+;(add-to-list 'load-path "~/local/share/emacs/site-lisp")
+;
+;(autoload 'smalltalk-mode "smalltalk-mode.elc" "" t)
+;(autoload 'gst "gst-mode.elc" "" t)
+;
+;(push '("\\.st\\'" . smalltalk-mode) auto-mode-alist)
+;;(push "\\.star\\'" inhibit-first-line-modes-regexps)
 
-;; モード変数
-(defvar keisen-x-mode nil
-  "Non-nil means `keisen-x-mode' is enabled.")
 
-;; ローカルキーマップ
-(defvar keisen-x-mode-map nil
-  "罫線モードのローカルキーマップ")
-(if keisen-x-mode-map
-    nil
-  (setq keisen-x-mode-map (make-sparse-keymap))
-  (define-key keisen-x-mode-map [C-right] 'keisen-right-move)
-  (define-key keisen-x-mode-map [C-left]  'keisen-left-move)
-  (define-key keisen-x-mode-map [C-up]    'keisen-up-move)
-  (define-key keisen-x-mode-map [C-down]  'keisen-down-move))
 
-;; モード行表示
-(if (not (assq 'keisen-x-mode minor-mode-alist))
-    (setq minor-mode-alist
-             (cons '(keisen-x-mode " Keisen")
-              minor-mode-alist)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; keisen
+;(load "keisen")
 
-;; モード関数
-(defun keisen-x-mode (&optional arg)
-  "Toggle `keisen-x-mode'."
-  (interactive "P")
 
-  ;; Toggle mode-variable
-  (cond
-   ((< (prefix-numeric-value arg) 0)             ; 引数が1未満の数値なら起動しない
-    (setq keisen-x-mode nil))
-   (arg (setq keisen-x-mode t))                  ; 何かしらの引数をもつならば起動
-   (t (setq keisen-x-mode (not keisen-x-mode)))) ; symbol t を引数にもつならばモードを逆転。
-
-  ;; content（具体処理）
-  (if keisen-x-mode
-      (progn
-	(use-local-map keisen-x-mode-map))
-      nil)
-)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; kml-foo-mode
@@ -494,6 +406,13 @@
 (add-hook 'kml-foo-mode-hook 'jaspace-mode)
 
 ;(set-face-foreground 'font-lock-operator-face "red")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; markdown-mode
+;;  marked は npm でインストールしといてください
+
+(setq markdown-command "marked")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ???
