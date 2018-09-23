@@ -380,6 +380,13 @@
 ;
 ; (require 'erlang-start)
 
+(add-hook 'erlang-mode-hook 'jaspace-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; elm
+
+(add-hook 'elm-mode-hook 'jaspace-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; smalltalk (gst)
 ;(add-to-list 'load-path "~/local/share/emacs/site-lisp")

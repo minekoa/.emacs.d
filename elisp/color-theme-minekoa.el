@@ -12,7 +12,7 @@
       (bottom-toolbar-shadow-color . "#79e77df779e7")
       (top-toolbar-shadow-color . "#fffffbeeffff")
       (background-mode . dark))
-     (default ((t (nil))))
+     (default ((t (:foreground "lavender blush"))))
      (region ((t (:background "DarkSlateBlue"))))
      (underline ((t (:foreground "yellow" :underline t))))
 
