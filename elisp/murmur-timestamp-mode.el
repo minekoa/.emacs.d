@@ -40,24 +40,21 @@
   (if murmur-timestamp-mode
       (progn
         (use-local-map murmur-timestamp-mode-map)
-        (add-hook 'before-save-hook 'insert-current-hhmm t) ;; t means LOCAL
+        (add-hook 'before-save-hook 'insert-current-time t) ;; t means LOCAL
         )
-    (remove-hook 'before-save-hook 'insert-current-hhmm t) ;; too
+    (remove-hook 'before-save-hook 'insert-current-time t) ;; too
     )
   )
 
-
+(defcustom murmur-timestamp-format "\n%H:%M\n\n"
+  "Format time string. ex) \"%Y-%m-%d(%a) %H:%M:%S\"")
 
 (defun insert-current-time()
-  (interactive)
-  (insert (format-time-string "%Y-%m-%d(%a) %H:%M:%S" (current-time))))
-
-(defun insert-current-hhmm()
   (interactive)
   (if murmur-timestamp-mode
       (progn
         (end-of-line)
-        (insert (format-time-string "\n%H:%M\n" (current-time)))
+        (insert (format-time-string murmur-timestamp-format (current-time)))
         )
     nil
     )
