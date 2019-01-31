@@ -17,7 +17,7 @@
 
 ;; デフォルトフレームパラメータ
 (setq default-frame-alist
-      (append (list 
+      (append (list
 	       ;;size
 	       '(width . 100)
 	       '(height . 40)
@@ -29,16 +29,19 @@
 
 	       ;;fount
 	       ;; (frame-parameter nil 'font) して得られた文字列を設定
-	       '(font . "-unknown-VL ゴシック-normal-normal-normal-*-12-*-*-*-*-0-iso10646-1")
+;;	       '(font . "-unknown-VL ゴシック-normal-normal-normal-*-12-*-*-*-*-0-iso10646-1")
+           '(font . "-VL  -VL ゴシック-normal-normal-normal-*-14-*-*-*-*-0-iso10646-1")
 	       )
 	      default-frame-alist))
 
+;(dolist (x (x-list-fonts "*")) (print x))
+; で一覧取ってきて探すといいよ
 
 ;;; package installer の準備
 (require 'package)
 (package-initialize)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages"))
 
 ;;; Backup-files
 (setq backup-files t)
@@ -115,6 +118,10 @@
 ;; カスタム変数は別ファイルに
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
+;; 保存時に末尾の空白を削る
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key-bind (global)
 
@@ -173,7 +180,7 @@
 
 (global-set-key "\C-\\" 'toggle-input-method)
 ;(global-set-key [zenkaku-hankaku] 'toggle-input-method)
-(global-set-key "\M-`" 'toggle-input-method)
+;(global-set-key "\M-`" 'toggle-input-method)
 (global-set-key [M-escape] 'toggle-input-method)
 (global-set-key "\C-j" 'toggle-input-method) ;; 岡部さんおすすめ
 
@@ -184,9 +191,11 @@
 	  (lambda()
 	    (define-key mozc-mode-map (kbd "<zenkaku-hankaku>") 'toggle-input-method)))
 
+(setq mozc-candidate-style 'overlay)
+;(setq mozc-candidate-style 'echo-area) ;; ミニバッファに表示するならこれ
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; color-theme 
+;; color-theme
 ;;   https://code.google.com/p/gnuemacscolorthemetest/
 ;;   色見本:  http://sakito.jp/emacs/colortheme.html
 
@@ -196,6 +205,10 @@
 ;; テーマを適用
 (load "color-theme-minekoa")
 (color-theme-minekoa-blue)
+
+;; frame-background-mode を使っている子(rst-mode)のために
+;; (dark が取れてframe-background-modo にセットされる)
+(setq frame-background-mode (frame-parameter nil 'background-mode))
 
 ;; マウスでポイントしている箇所の face を取得する
 ;; http://sakito.jp/emacs/colortheme.html
@@ -237,7 +250,7 @@
       ;; customize
       (setq jaspace-highlight-tabs ?^) ;タブを^ で置き換える場合(emacs22以上)
       (setq jaspace-alternate-eol-string "\xab\n")
-    
+
       ;; font-face
       (custom-set-faces
        '(jaspace-highlight-eol-face ((t (:foreground "#555588"))))
