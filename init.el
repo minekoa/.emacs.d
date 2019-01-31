@@ -433,7 +433,47 @@
 ;;  marked は npm でインストールしといてください
 
 (setq markdown-command "marked")
+(add-hook 'markdown-mode-hook 'jaspace-mode)
+
+;; code block でフォントを変えない(色は変える)
+(custom-set-faces
+ '(markdown-code-face
+   ((t (:inherit default :foreground "chartreuse1")))) ;"DarkOliveGreen1" "aquamarine"
+ '(markdown-inline-code-face
+   ((t (:inherit default :foreground "chartreuse1")))) ;"DarkOliveGreen1" "aquamarine"
+ )
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; rst-mode
+;;    ymir の ヘッダレベリングに合わせる。オリジナルはこんな感じ
+;;    '((?= over-and-under 1)
+;;      (?= simple 0)
+;;      (?- simple 0)
+;;      (?~ simple 0)
+;;      (?+ simple 0)
+;;      (?` simple 0)
+;;      (?# simple 0)
+;;      (?@ simple 0))
+
+(custom-set-variables '(rst-preferred-adornments
+                        `((?= simple 0)    ; 第1節
+                          (?- simple 0)    ; 1.1 subsection
+                          (?^ simple 0)    ; 1.1.1 subsubsection
+                          (?\" simple 0)   ; 段落
+                          (?~ simple 0)
+                          (?+ simple 0)
+                          (?` simple 0)
+                          (?# simple 0)
+                          (?@ simple 0))))
+
+(add-hook 'rst-mode-hook 'jaspace-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; murmur-timestamp-mode
+
+(autoload 'murmur-timestamp-mode "murmur-timestamp-mode" "" t)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ???
-
