@@ -180,7 +180,7 @@
 
 (global-set-key "\C-\\" 'toggle-input-method)
 ;(global-set-key [zenkaku-hankaku] 'toggle-input-method)
-;(global-set-key "\M-`" 'toggle-input-method)
+(global-set-key "\M-`" 'toggle-input-method)
 (global-set-key [M-escape] 'toggle-input-method)
 (global-set-key "\C-j" 'toggle-input-method) ;; 岡部さんおすすめ
 
@@ -191,8 +191,11 @@
 	  (lambda()
 	    (define-key mozc-mode-map (kbd "<zenkaku-hankaku>") 'toggle-input-method)))
 
-(setq mozc-candidate-style 'overlay)
+
+;(setq mozc-candidate-style 'overlay)
 ;(setq mozc-candidate-style 'echo-area) ;; ミニバッファに表示するならこれ
+(require 'mozc-popup)
+(setq mozc-candidate-style 'popup) ; select popup style.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; color-theme
@@ -245,7 +248,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; jaspace
 ;;;    http://homepage3.nifty.com/satomii/software/elisp.ja.html
-(if t
+(if nil
     (progn
       ;; customize
       (setq jaspace-highlight-tabs ?^) ;タブを^ で置き換える場合(emacs22以上)
@@ -262,6 +265,43 @@
       ;; loading
       (require 'jaspace)
       ))
+
+;; 2019-02-04
+;; どうも mozc.el と干渉するようなので、使わない方向で
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  whitespace-mode
+;;    設定は[whitespace-modeの設定](http://syohex.hatenablog.com/entry/20110119/1295450495)からパクった
+
+(require 'whitespace)
+;; see whitespace.el for more details
+(setq whitespace-style '(face tabs tab-mark spaces space-mark newline newline-mark))
+(setq whitespace-display-mappings
+      '((space-mark ?\u3000 [?\u25a1])
+        ;; WARNING: the mapping below has a problem.
+        ;; When a TAB occupies exactly one column, it will display the
+        ;; character ?\xBB at that column followed by a TAB which goes to
+        ;; the next TAB column.
+        ;; If this is a problem for you, please, comment the line below.
+        (newline-mark ?\n    [?\xAB ?\n] [?$ ?\n])    ; end-of-line
+        (tab-mark ?\t [?\xBB ?\t] [?\\ ?\t])))
+(setq whitespace-space-regexp "\\(\u3000+\\)")
+;(set-face-foreground 'whitespace-tab "#adff2f")
+(set-face-foreground 'whitespace-tab "#555588")
+(set-face-background 'whitespace-tab 'nil)
+;(set-face-underline  'whitespace-tab t)
+(set-face-foreground 'whitespace-space "#555588")
+(set-face-background 'whitespace-space 'nil)
+(set-face-bold-p 'whitespace-space t)
+(set-face-foreground 'whitespace-newline "#555588")
+(set-face-background 'whitespace-newline 'nil)
+;(set-face-foreground 'whitespace-newline  "DimGray")
+;(set-face-background 'whitespace-newline 'nil)
+(global-whitespace-mode 1)
+(global-set-key (kbd "C-x w") 'global-whitespace-mode)
+
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -393,12 +433,14 @@
 ;
 ; (require 'erlang-start)
 
-(add-hook 'erlang-mode-hook 'jaspace-mode)
+;(add-hook 'erlang-mode-hook 'jaspace-mode)
+(add-hook 'erlang-mode-hook 'whitespace-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; elm
 
-(add-hook 'elm-mode-hook 'jaspace-mode)
+;(add-hook 'elm-mode-hook 'jaspace-mode)
+(add-hook 'elm-mode-hook 'whitespace-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; smalltalk (gst)
@@ -423,7 +465,7 @@
 
 (load-library "hideshow")
 (autoload 'kml-foo-mode "kml-foo-mode" "" t)
-(add-hook 'kml-foo-mode-hook 'jaspace-mode)
+;(add-hook 'kml-foo-mode-hook 'jaspace-mode)
 
 ;(set-face-foreground 'font-lock-operator-face "red")
 
@@ -433,7 +475,8 @@
 ;;  marked は npm でインストールしといてください
 
 (setq markdown-command "marked")
-(add-hook 'markdown-mode-hook 'jaspace-mode)
+;(add-hook 'markdown-mode-hook 'jaspace-mode)
+(add-hook 'markdown-mode-hook 'whitespace-mode)
 
 ;; code block でフォントを変えない(色は変える)
 (custom-set-faces
@@ -467,7 +510,8 @@
                           (?# simple 0)
                           (?@ simple 0))))
 
-(add-hook 'rst-mode-hook 'jaspace-mode)
+;(add-hook 'rst-mode-hook 'jaspace-mode)
+(add-hook 'rst-mode-hook 'whitespace-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; murmur-timestamp-mode
