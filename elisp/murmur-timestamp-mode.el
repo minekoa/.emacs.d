@@ -10,11 +10,12 @@
 
 ;; ローカルキーマップ
 (defvar murmur-timestamp-mode-map nil
-  "罫線モードのローカルキーマップ")
+  "ミュるミュるモードのローカルキーマップ")
 (if murmur-timestamp-mode-map
     nil
   (setq murmur-timestamp-mode-map (make-sparse-keymap))
-  (define-key murmur-timestamp-mode-map [C-right] 'keisen-right-move)
+  (define-key murmur-timestamp-mode-map (kbd "C-c C-t") 'insert-current-time)
+  (define-key murmur-timestamp-mode-map (kbd "C-c C-s") 'save-buffer) ;; todo: before-save-hock をしないで保存できるようにしたい
 )
 
 ;; モード行表示
@@ -39,7 +40,12 @@
   ;; content（具体処理）
   (if murmur-timestamp-mode
       (progn
-        (use-local-map murmur-timestamp-mode-map)
+        ;; minor-mode の keymapを登録
+        (if (not (assq 'murmur-timestamp-mode minor-mode-map-alist))
+            (add-to-list 'minor-mode-map-alist
+                         (cons 'murmur-timestamp-mode murmur-timestamp-mode-map)))
+
+        ;; 保存時に勝手にタイムスタンプがおされるように
         (add-hook 'before-save-hook 'insert-current-time t) ;; t means LOCAL
         )
     (remove-hook 'before-save-hook 'insert-current-time t) ;; too
