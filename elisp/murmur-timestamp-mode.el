@@ -15,7 +15,7 @@
     nil
   (setq murmur-timestamp-mode-map (make-sparse-keymap))
   (define-key murmur-timestamp-mode-map (kbd "C-c C-t") 'insert-current-time)
-  (define-key murmur-timestamp-mode-map (kbd "C-c C-s") 'save-buffer) ;; todo: before-save-hock をしないで保存できるようにしたい
+;  (define-key murmur-timestamp-mode-map (kbd "C-c C-s") 'insert-time-and-save-buffer)
 )
 
 ;; モード行表示
@@ -49,10 +49,11 @@
         (add-hook 'before-save-hook 'insert-current-time t) ;; t means LOCAL
         )
     (remove-hook 'before-save-hook 'insert-current-time t) ;; too
+    nil
     )
   )
 
-(defcustom murmur-timestamp-format "\n%H:%M\n\n"
+(defcustom murmur-timestamp-format "%H:%M"
   "Format time string. ex) \"%Y-%m-%d(%a) %H:%M:%S\"")
 
 (defun insert-current-time()
@@ -60,8 +61,21 @@
   (if murmur-timestamp-mode
       (progn
         (end-of-line)
+        (while (> (current-column) 0)
+          (next-line)
+          (end-of-line))
+;        (if (eq (current-column) 0)
+;            nil
+;          (insert "\n"))
         (insert (format-time-string murmur-timestamp-format (current-time)))
+        (insert "\n\n")
         )
     nil
     )
   )
+
+(defun insert-time-and-save-buffer()
+  (interactive)
+  (progn (insert-current-time)
+         (save-buffer)
+         ))
