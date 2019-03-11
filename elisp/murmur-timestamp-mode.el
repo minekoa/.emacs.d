@@ -56,29 +56,28 @@
 (defcustom murmur-timestamp-format "%H:%M"
   "Format time string. ex) \"%Y-%m-%d(%a) %H:%M:%S\"")
 
-;(defun end-of-paragraph()
-;  (interactive)
-
 (defun insert-current-time()
   (interactive)
   (if murmur-timestamp-mode
       (progn
+        ;; 段落の後ろの行に移動 (すでに段落間にいる場合は前の段落のお尻に張り付く)
         (backward-paragraph)
         (forward-paragraph)
 
-;        (while (> (current-column) 0)
-;          (next-line)
-;          (end-of-line))
-;        (if (eq (current-column) 0)
-;            nil
-;          (insert "\n"))
-;        (let
-;            ((lastline (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
-;             (timestamp (format-time-string murmur-timestamp-format (current-time)))
-;             if (eq (lastline
+        ;; 段落の最終行が 今時刻と同じタイムスタンプか調べる
+        (previous-line)
+        (let
+            ((lastline (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
+             (timestamp (format-time-string murmur-timestamp-format (current-time))))
+          (forward-line)
 
-        (insert (format-time-string murmur-timestamp-format (current-time)))
-        (insert "\n\n")
+          (if (string= lastline timestamp)
+              ;; 今時刻のタイムスタンプの場合は、移動だけする
+              (forward-line)
+
+            ;; 今時刻のタイムスタンプじゃない場合は新たにタイムスタンプをつける
+            (insert timestamp)
+            (insert "\n\n")))
         )
     nil
     )
