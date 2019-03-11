@@ -477,6 +477,14 @@
 (setq markdown-command "marked")
 ;(add-hook 'markdown-mode-hook 'jaspace-mode)
 (add-hook 'markdown-mode-hook 'whitespace-mode)
+(add-hook 'markdown-mode-hook
+          '(lambda ()
+             (electric-indent-local-mode -1)))
+
+(add-hook 'text-mode-hook
+          '(lambda ()
+             (setq indent-tabs-mode nil)
+             (setq tab-width 4)))
 
 ;; code block でフォントを変えない(色は変える)
 (custom-set-faces
@@ -517,6 +525,14 @@
 ;; murmur-timestamp-mode
 
 (autoload 'murmur-timestamp-mode "murmur-timestamp-mode" "" t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ispell mode (use aspell)
+
+(setq-default ispell-program-name "aspell")
+(eval-after-load "ispell"
+ '(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
