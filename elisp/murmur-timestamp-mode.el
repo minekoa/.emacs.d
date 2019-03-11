@@ -60,12 +60,11 @@
   (interactive)
   (if murmur-timestamp-mode
       (progn
-        ;; 段落の後ろの行に移動 (すでに段落間にいる場合は前の段落のお尻に張り付く)
-        (backward-paragraph)
-        (forward-paragraph)
+        ;; 今いる段落の末尾（最終行のEOL)に移動する,
+        ;; (既に段落間にいる場合は前の段落の末尾に移動)
+        (end-of-paragraph)
 
         ;; 段落の最終行が 今時刻と同じタイムスタンプか調べる
-        (previous-line)
         (let
             ((lastline (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
              (timestamp (format-time-string murmur-timestamp-format (current-time))))
@@ -82,6 +81,20 @@
     nil
     )
   )
+
+(defun end-of-paragraph()
+  (interactive)
+  (end-of-line)
+  (if (eq (current-column) 0)
+      (progn
+        (while (eq (current-column) 0)
+          (previous-line)
+          (end-of-line)))
+    (while (> (current-column) 0)
+      (next-line)
+      (end-of-line))
+    (previous-line)))
+
 
 (defun insert-time-and-save-buffer()
   (interactive)
