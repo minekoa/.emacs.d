@@ -56,17 +56,27 @@
 (defcustom murmur-timestamp-format "%H:%M"
   "Format time string. ex) \"%Y-%m-%d(%a) %H:%M:%S\"")
 
+;(defun end-of-paragraph()
+;  (interactive)
+
 (defun insert-current-time()
   (interactive)
   (if murmur-timestamp-mode
       (progn
-        (end-of-line)
-        (while (> (current-column) 0)
-          (next-line)
-          (end-of-line))
+        (backward-paragraph)
+        (forward-paragraph)
+
+;        (while (> (current-column) 0)
+;          (next-line)
+;          (end-of-line))
 ;        (if (eq (current-column) 0)
 ;            nil
 ;          (insert "\n"))
+;        (let
+;            ((lastline (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
+;             (timestamp (format-time-string murmur-timestamp-format (current-time)))
+;             if (eq (lastline
+
         (insert (format-time-string murmur-timestamp-format (current-time)))
         (insert "\n\n")
         )
