@@ -30,7 +30,8 @@
 	       ;;fount
 	       ;; (frame-parameter nil 'font) して得られた文字列を設定
 ;;	       '(font . "-unknown-VL ゴシック-normal-normal-normal-*-12-*-*-*-*-0-iso10646-1")
-           '(font . "-VL  -VL ゴシック-normal-normal-normal-*-14-*-*-*-*-0-iso10646-1")
+;;           '(font . "-VL  -VL ゴシック-normal-normal-normal-*-14-*-*-*-*-0-iso10646-1")
+;;           '(font . "-unknown-VL ゴシック-normal-normal-normal-*-12-*-*-*-*-0-iso10646-1")
 	       )
 	      default-frame-alist))
 
@@ -202,22 +203,35 @@
 ;;   https://code.google.com/p/gnuemacscolorthemetest/
 ;;   色見本:  http://sakito.jp/emacs/colortheme.html
 
-(load "color-theme")
-(color-theme-initialize)
+(if nil
+    (progn
+      (load "color-theme")
+      (color-theme-initialize)
 
-;; テーマを適用
-(load "color-theme-minekoa")
-(color-theme-minekoa-blue)
+      ;; テーマを適用
+      (load "color-theme-minekoa")
+      (color-theme-minekoa-blue)
 
-;; frame-background-mode を使っている子(rst-mode)のために
-;; (dark が取れてframe-background-modo にセットされる)
-(setq frame-background-mode (frame-parameter nil 'background-mode))
+      ;; frame-background-mode を使っている子(rst-mode)のために
+      ;; (dark が取れてframe-background-modo にセットされる)
+      (setq frame-background-mode (frame-parameter nil 'background-mode))
+      ))
 
 ;; マウスでポイントしている箇所の face を取得する
 ;; http://sakito.jp/emacs/colortheme.html
 (defun describe-face-at-point ()
  (interactive)
  (message "%s" (get-char-property (point) 'face)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; def-theme
+
+;; theme-load-path を通す
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(setq custom-theme-directory "~/.emacs.d/themes")
+
+;; カスタムテーマの読み込み
+(load-theme 'minekoa-blue t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOFを表示
@@ -401,16 +415,16 @@
 ;;   melpa (http://melpa.org/packages/) より
 ;;   M-x package-install migemo でインストール
 
-(load "migemo")
-(setq migemo-command "cmigemo")
-(setq migemo-options '("-q" "--emacs" "-i" "\a"))
-(setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
+;; (load "migemo")
+;; (setq migemo-command "cmigemo")
+;; (setq migemo-options '("-q" "--emacs" "-i" "\a"))
+;; (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
 
-(setq migemo-user-dictionary nil)
-(setq migemo-regex-dictionary nil)
-(setq migemo-coding-system 'utf-8-unix)
-(load-library "migemo")
-(migemo-init)
+;; (setq migemo-user-dictionary nil)
+;; (setq migemo-regex-dictionary nil)
+;; (setq migemo-coding-system 'utf-8-unix)
+;; (load-library "migemo")
+;; (migemo-init)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
