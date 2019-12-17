@@ -483,6 +483,15 @@
 
 ;(set-face-foreground 'font-lock-operator-face "red")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; rusk-foo-mode
+
+(load-library "hideshow")
+(autoload 'rusk-foo-mode "rusk-foo-mode" "" t)
+;(add-hook 'rusk-foo-mode-hook 'jaspace-mode)
+
+;(set-face-foreground 'font-lock-operator-face "red")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; markdown-mode
