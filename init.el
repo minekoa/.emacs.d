@@ -42,7 +42,7 @@
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages"))
+;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages"))
 
 ;;; Backup-files
 (setq backup-files t)
@@ -122,12 +122,19 @@
 ;; 保存時に末尾の空白を削る
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key-bind (global)
 
 ;; C-h => backspace
 (keyboard-translate ?\C-h ?\C-?)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (Windows Customize)
+
+(setq visible-bell t)
+(global-set-key [M-kanji] 'ignore)
+(prefer-coding-system 'utf-8)           ; ファイルの新規作成時に使用するencoding
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -176,27 +183,27 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mozc-el
 
-(require 'mozc)
-(setq default-input-method "japanese-mozc")
-
-(global-set-key "\C-\\" 'toggle-input-method)
-;(global-set-key [zenkaku-hankaku] 'toggle-input-method)
-(global-set-key "\M-`" 'toggle-input-method)
-(global-set-key [M-escape] 'toggle-input-method)
-(global-set-key "\C-j" 'toggle-input-method) ;; 岡部さんおすすめ
-
-;; 全角半角でトグルすると Wrong response serverが発生する不具合へのハック
-;; 元ネタ: http://d.hatena.ne.jp/kitokitoki/20110815/p3
-(global-set-key (kbd "<zenkaku-hankaku>") 'toggle-input-method)
-(add-hook 'mozc-mode-hook
-	  (lambda()
-	    (define-key mozc-mode-map (kbd "<zenkaku-hankaku>") 'toggle-input-method)))
-
-
-;(setq mozc-candidate-style 'overlay)
-;(setq mozc-candidate-style 'echo-area) ;; ミニバッファに表示するならこれ
-(require 'mozc-popup)
-(setq mozc-candidate-style 'popup) ; select popup style.
+;; (require 'mozc)
+;; (setq default-input-method "japanese-mozc")
+;;
+;; (global-set-key "\C-\\" 'toggle-input-method)
+;; ;(global-set-key [zenkaku-hankaku] 'toggle-input-method)
+;; (global-set-key "\M-`" 'toggle-input-method)
+;; (global-set-key [M-escape] 'toggle-input-method)
+;; (global-set-key "\C-j" 'toggle-input-method) ;; 岡部さんおすすめ
+;;
+;; ;; 全角半角でトグルすると Wrong response serverが発生する不具合へのハック
+;; ;; 元ネタ: http://d.hatena.ne.jp/kitokitoki/20110815/p3
+;; (global-set-key (kbd "<zenkaku-hankaku>") 'toggle-input-method)
+;; (add-hook 'mozc-mode-hook
+;;  	  (lambda()
+;;  	    (define-key mozc-mode-map (kbd "<zenkaku-hankaku>") 'toggle-input-method)))
+;;
+;;
+;; ;(setq mozc-candidate-style 'overlay)
+;; ;(setq mozc-candidate-style 'echo-area) ;; ミニバッファに表示するならこれ
+;; (require 'mozc-popup)
+;; (setq mozc-candidate-style 'popup) ; select popup style.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; color-theme
@@ -556,6 +563,54 @@
 (setq-default ispell-program-name "aspell")
 (eval-after-load "ispell"
  '(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; calc-winrate
+;;   オラタンの勝率計算。
+;;   以下の形式の勝敗記録からリージョン内の勝率を計算する
+;;
+;;   PS-ID  oxxoxxoxx
+
+(defun calc-winrate ()
+ (interactive)
+ (let (wal (wn 0) (ln 0) (eor (region-end)))
+   (goto-char (region-beginning))
+   (while (< (point) eor)
+     (setq wal (calc-line-winrate))
+     (setq wn (+ (car wal) wn))
+     (setq ln (+ (cdr wal) ln))
+     (forward-line)
+     )
+   (insert (format "\n win %d  lose %d  total %d  rate %.3f"
+                   wn ln (+ wn ln) (/ (float wn) (+ wn ln))))
+   ))
+
+
+(defun calc-line-winrate ()
+  (progn
+    ;; 現在カーソル行の勝率ワードの読み出し
+    (setq wlword
+          (nth 1
+           (split-string
+            (buffer-substring-no-properties (point-at-bol) (point-at-eol))
+            )))
+
+    ;; 勝敗ワードから (勝利数 . 敗北数) を数え上げ
+    (let ((wllist (split-string wlword ""))
+          (wn 0)
+          (ln 0))
+;      (prin1 wllist)
+      (while wllist
+        (cond ((string= (car wllist) "o") (setq wn (1+ wn)))
+              ((string= (car wllist) "x") (setq ln (1+ ln)))
+              )
+        (setq wllist (cdr wllist)))
+      (cons wn ln)
+      )
+    )
+  )
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
